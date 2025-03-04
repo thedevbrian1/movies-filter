@@ -43,6 +43,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <footer className="my-8">
+          <p className="text-center text-gray-500">
+            Demo by{" "}
+            <a
+              href="https://brianmwangi.co.ke"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="text-amber-700 hover:underline transition duration-300 ease-in-out"
+            >
+              Brian Mwangi
+            </a>{" "}
+          </p>
+        </footer>
         <ScrollRestoration />
         <Scripts />
       </body>
