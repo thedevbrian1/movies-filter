@@ -1,5 +1,6 @@
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
@@ -10,8 +11,17 @@ import {
 import type { Route } from "./+types/root";
 import tailwindStyles from "./styles/app.css?url";
 import subscribeStyles from "./styles/subscribe.css?url";
+import { RotateCcw } from "lucide-react";
 
 export const links: Route.LinksFunction = () => [
+  {
+    rel: "stylesheet",
+    href: tailwindStyles,
+  },
+  {
+    rel: "stylesheet",
+    href: subscribeStyles,
+  },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",
@@ -24,11 +34,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: tailwindStyles,
-  },
-  {
-    rel: "stylesheet",
-    href: subscribeStyles,
+    href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Orelega+One&display=swap",
   },
 ];
 
@@ -41,7 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="font-body">
         {children}
         <footer className="my-8">
           <p className="text-center text-gray-500">
@@ -68,30 +74,43 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
-  let stack: string | undefined;
-
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    console.error(error);
+    return (
+      <div className="w-full h-screen grid place-items-center">
+        <div>
+          <h1 className="font-heading text-5xl lg:text-7xl xl:text-8xl text-slate-500 text-center">
+            {error.status} {error.statusText}
+          </h1>
+          <p className="mt-4 text-center text-red-500">{error.data}</p>
+          <Link
+            to="."
+            className="bg-white hover:bg-gray-300 active:scale-[.97] transition ease-in-out duration-300 mt-4 px-4 py-2 rounded-lg text-black flex justify-self-center gap-2 items-center max-w-fit"
+          >
+            <RotateCcw /> <span className="font-semibold">Try again</span>
+          </Link>
+        </div>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    console.error(error);
+    return (
+      <div className="w-full h-screen grid place-items-center">
+        <div>
+          <h1 className="font-bold text-5xl lg:text-7xl xl:text-8xl text-slate-500 text-center">
+            Error
+          </h1>
+          <p className="mt-4 text-center text-red-500">{error.message}</p>
+          <Link
+            to="."
+            className="bg-white hover:bg-gray-300 active:scale-[.97] transition ease-in-out duration-300 mt-4 px-4 py-2 rounded-lg text-black flex justify-self-center gap-2 items-center max-w-fit"
+          >
+            <RotateCcw /> Try again
+          </Link>
+        </div>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
   }
-
-  return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
-  );
 }
