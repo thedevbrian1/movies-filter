@@ -1,14 +1,24 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+import tailwindStyles from "./styles/app.css?url";
+import subscribeStyles from "./styles/subscribe.css?url";
+import {
+  ThemeBody,
+  ThemeHead,
+  ThemeProvider,
+  useTheme,
+} from "./utils/themeProvider";
+import { getThemeSession } from "./utils/theme.server";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -21,19 +31,58 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  {
+    rel: "stylesheet",
+    href: tailwindStyles,
+  },
+  {
+    rel: "stylesheet",
+    href: subscribeStyles,
+  },
 ];
 
+export async function loader({ request }: Route.LoaderArgs) {
+  let themeSession = await getThemeSession(request);
+
+  let theme = themeSession.getTheme();
+
+  let validTheme = theme !== "system" ? theme : null;
+
+  return data({
+    theme: validTheme,
+  });
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  let data = useLoaderData<typeof loader>();
+
+  console.log({ sessionTheme: data.theme });
+
   return (
-    <html lang="en">
+    <ThemeProvider specifiedTheme={data.theme}>
+      <ThemeConsumer>{children}</ThemeConsumer>
+    </ThemeProvider>
+  );
+}
+
+function ThemeConsumer({ children }: { children: React.ReactNode }) {
+  let data = useLoaderData<typeof loader>();
+  let [theme] = useTheme();
+
+  console.log({ theme });
+
+  return (
+    <html lang="en" className={theme ?? ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ThemeHead ssrTheme={Boolean(data.theme)} />
       </head>
       <body>
         {children}
+        <ThemeBody ssrTheme={Boolean(data.theme)} />
         <ScrollRestoration />
         <Scripts />
       </body>
