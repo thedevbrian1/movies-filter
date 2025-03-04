@@ -274,13 +274,15 @@ html:active-view-transition-type(b) {
 .cool-item a.transitioning img {
   view-transition-name: movie-image;
 }
-
 .cool-item a.transitioning h2 {
   view-transition-name: movie-title;
 }
-
 .cool-item a.transitioning span {
   view-transition-name: movie-rating;
+}
+
+.movie-detail img {
+  view-transition-name: movie-image;
 }
 
 .movie-detail img {
@@ -291,7 +293,7 @@ html:active-view-transition-type(b) {
   view-transition-name: movie-title;
 }
 
-.movie-detail span {
+.movie-detail span#rating {
   view-transition-name: movie-rating;
 }
 

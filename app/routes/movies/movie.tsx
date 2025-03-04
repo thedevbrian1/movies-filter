@@ -56,7 +56,7 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
         //   });
         // }}
       >
-        <span className="group-hover:-translate-x-1 transition-all ease-in-out duration-300">
+        <span className=" duration-300">
           <ArrowLeft />
         </span>{" "}
         Back to movies
@@ -66,7 +66,10 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
           <h1 className="font-heading text-5xl lg:text-7xl">
             {loaderData.title}
           </h1>
-          <span className="flex gap-2 items-center mt-4 text-amber-300">
+          <span
+            id="rating"
+            className="flex gap-2 items-center mt-4 text-amber-300"
+          >
             <Star /> {loaderData.vote_average.toFixed(2)}
           </span>
           <p className="mt-4 text-gray-300">{loaderData.overview}</p>
