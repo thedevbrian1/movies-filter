@@ -11,30 +11,22 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
 export async function loader({ request }: Route.LoaderArgs) {
   let userGenres = new URL(request.url).searchParams.getAll("genre");
 
-  console.log({ userGenres });
-
   let genreRes = await fetch(`https://api.themoviedb.org/3/genre/movie/list`, {
     headers: {
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkY2E1ODczYjUyYjAzNzgzMzc2NWI3OTFhZTIxODMyZCIsIm5iZiI6MTcxMDIzMDIzNC44NDMwMDAyLCJzdWIiOiI2NWYwMGFkYTFmNzQ4YjAxODQ1MWE2NDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.WECXlO6pMlGSj_UfPJ3DzJkmSol1ArYgdmKneIhi174",
+      Authorization: `Bearer ${process.env.TMDB_READ_API_KEY}`,
     },
   });
 
   let { genres } = await genreRes.json();
-  console.log({ genres });
 
   let matchedGenres = userGenres.map((item) => {
     let match = genres.find((genre) => genre.name.toLowerCase() === item);
     return match;
   });
 
-  console.log({ matchedGenres });
-
   let genreIds = matchedGenres.map((item) => item.id);
-  console.log({ genreIds });
   let genreQuery = genreIds.join();
-  console.log({ genreQuery });
 
   let res = await fetch(
     `https://api.themoviedb.org/3/discover/movie?with_genres=${genreQuery}`,
@@ -56,8 +48,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Movies({ loaderData }: Route.ComponentProps) {
-  console.log({ movies: loaderData });
-
   let submit = useSubmit();
   let [searchParams] = useSearchParams();
   let genres = searchParams.getAll("genre");

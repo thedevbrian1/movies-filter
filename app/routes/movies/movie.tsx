@@ -2,8 +2,6 @@ import { data, useNavigate } from "react-router";
 import type { Route } from "./+types/movie";
 import { ArrowLeft, Star } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
-// import { flushSync } from "react-dom";
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {
   return {
@@ -16,8 +14,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   let res = await fetch(`https://api.themoviedb.org/3/movie/${id}`, {
     headers: {
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkY2E1ODczYjUyYjAzNzgzMzc2NWI3OTFhZTIxODMyZCIsIm5iZiI6MTcxMDIzMDIzNC44NDMwMDAyLCJzdWIiOiI2NWYwMGFkYTFmNzQ4YjAxODQ1MWE2NDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.WECXlO6pMlGSj_UfPJ3DzJkmSol1ArYgdmKneIhi174",
+      Authorization: `Bearer ${process.env.TMDB_READ_API_KEY}`,
     },
   });
 
@@ -31,10 +28,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 }
 
 export default function Movie({ loaderData }: Route.ComponentProps) {
-  console.log({ movie: loaderData });
   let navigate = useNavigate();
-
-  let [isHovered, setIsHovered] = useState(false);
 
   return (
     <main className="px-6 pb-8 max-w-6xl mx-auto mt-20 movie-detail">
@@ -70,12 +64,7 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
           <span className="flex gap-2 items-center mt-4 text-amber-300">
             <Star /> {loaderData.vote_average.toFixed(2)}
           </span>
-          <p
-            className="mt-4 text-gray-300"
-            // style={{ viewTransitionName: "details" }}
-          >
-            {loaderData.overview}
-          </p>
+          <p className="mt-4 text-gray-300">{loaderData.overview}</p>
         </div>
         <img
           src={`https://image.tmdb.org/t/p/w500${loaderData.poster_path}`}
