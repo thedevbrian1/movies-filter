@@ -9,6 +9,14 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
   };
 }
 
+export function meta({ data }: Route.MetaArgs) {
+  return [
+    {
+      title: `${data?.title} | Movieflix`,
+    },
+  ];
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   let id = Number(params.id);
   let res = await fetch(`https://api.themoviedb.org/3/movie/${id}`, {
@@ -42,7 +50,7 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
         <ArrowLeft /> Back to movies
       </Link> */}
       <Button
-        className={`flex gap-2 active:scale-[.97] group focus-visible:border-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-rose-700 transition-all ease-in-out duration-300 items-center`}
+        className={`flex gap-2 active:scale-[.97] group focus-visible:border-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-2 focus-visible:ring-rose-700 transition-all ease-in-out duration-300 items-center group`}
         variant="outline"
         onClick={() => navigate(-1)}
         // onMouseEnter={(e) => {
@@ -56,7 +64,7 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
         //   });
         // }}
       >
-        <span className=" duration-300">
+        <span className="group-hover:-translate-x-0.5 duration-300 transition-all ease-in-out">
           <ArrowLeft />
         </span>{" "}
         Back to movies
@@ -70,7 +78,7 @@ export default function Movie({ loaderData }: Route.ComponentProps) {
             id="rating"
             className="flex gap-2 items-center mt-4 text-amber-300"
           >
-            <Star /> {loaderData.vote_average.toFixed(2)}
+            <Star /> {loaderData.vote_average?.toFixed(2)}
           </span>
           <p className="mt-4 text-gray-300">{loaderData.overview}</p>
         </div>

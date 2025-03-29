@@ -16,6 +16,10 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
   };
 }
 
+export function meta() {
+  return [{ title: "Movies | Movieflix" }];
+}
+
 export async function loader({ request }: Route.LoaderArgs) {
   let userGenres = new URL(request.url).searchParams.getAll("genre");
 
@@ -62,7 +66,7 @@ export default function Movies({ loaderData }: Route.ComponentProps) {
 
   return (
     <main className="px-6 pb-16 max-w-6xl mx-auto mt-20">
-      <h1 className="font-heading text-5xl lg:text-7xl">Movies</h1>
+      <h1 className="font-heading text-5xl lg:text-7xl">Movieflix</h1>
       <Form className="mt-4">
         <fieldset>
           <legend className="text-gray-400">Select one or more genres</legend>
